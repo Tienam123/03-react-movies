@@ -13,7 +13,7 @@ function App() {
     const [loading, setLoading] = useState<boolean>(false)
     const [isModalActive, setIsModalActive] = useState(false)
     const [error, setError] = useState('')
-    const [currentMovie, setCurrentMovie] = useState<Movie|null>(null)
+    const [currentMovie, setCurrentMovie] = useState<Movie | null>(null)
     const handleSubmit = (formData: FormData) => {
         setMovies([])
         const query = formData.get("query") as string;
@@ -35,7 +35,7 @@ function App() {
         }).finally(() => setLoading(false))
     };
 
-    function onSelect(movie:Movie):void {
+    function onSelect(movie: Movie): void {
         setCurrentMovie(movie)
         setIsModalActive(true)
     }
@@ -46,7 +46,11 @@ function App() {
     }
 
     useEffect(() => {
-        document.body.classList.toggle('hidden')
+        if (isModalActive) {
+            document.body.classList.add('hidden')
+        } else {
+            document.body.classList.remove('hidden')
+        }
     }, [isModalActive]);
 
 
@@ -63,9 +67,15 @@ function App() {
     return (
         <>
             <SearchBar onSubmit={handleSubmit}/>
-            {loading ? (<Loader />) : (  <MovieGrid movies={movies} onSelect={onSelect}/>)}
+            {loading ? (<Loader/>) : (<MovieGrid
+                movies={movies}
+                onSelect={onSelect}
+            />)}
             {isModalActive && (
-                <MovieModal movie={currentMovie} onClose={onClose} />)}
+                <MovieModal
+                    movie={currentMovie}
+                    onClose={onClose}
+                />)}
             <Toaster position="top-center"/>
         </>
     )
