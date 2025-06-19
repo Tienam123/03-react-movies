@@ -17,7 +17,7 @@ function App() {
         setMovies([])
 
         setLoading(true);
-        setError("")
+        setError(null)
 
         movieService.fetchMovie(query).then(data => {
             if (!data.results.length) {
