@@ -9,10 +9,10 @@ export interface MovieModalProps {
     onClose: () => void;
 }
 
-const modalRoot = document.getElementById('modal-root')!;
 const MovieModal = ({movie,onClose}: MovieModalProps) => {
 
     useEffect(() => {
+        document.body.classList.add('hidden');
         const handleKeyDown = (event:KeyboardEvent) => {
             if (event.code === 'Escape') {
                 onClose()
@@ -21,6 +21,7 @@ const MovieModal = ({movie,onClose}: MovieModalProps) => {
         document.addEventListener('keydown',handleKeyDown);
 
         return () => {
+            document.body.classList.remove('hidden')
             document.removeEventListener('keydown',handleKeyDown)
         }
     }, [onClose]);
@@ -47,8 +48,8 @@ const MovieModal = ({movie,onClose}: MovieModalProps) => {
                     &times;
                 </button>
                 <img
-                    src={`${BASE_IMAGE_PATH}${SIZE.original}${movie?.poster_path}`}
-                    alt="movie_title"
+                    src={`${BASE_IMAGE_PATH}${SIZE.original}${movie?.backdrop_path}`}
+                    alt={movie?.title}
                     className={css.image}
                 />
                 <div className={css.content}>
@@ -63,7 +64,7 @@ const MovieModal = ({movie,onClose}: MovieModalProps) => {
                 </div>
             </div>
         </div>,
-        modalRoot
+        document.body
     );
 };
 

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {toast, Toaster} from "react-hot-toast";
 import SearchBar from "../SearchBar/SearchBar.tsx";
 import MovieGrid from "../MovieGrid/MovieGrid.tsx";
@@ -11,16 +11,10 @@ import MovieModal from "../MovieModal/MovieModal.tsx";
 function App() {
     const [movies, setMovies] = useState<Movie[]>([])
     const [loading, setLoading] = useState<boolean>(false)
-    const [isModalActive, setIsModalActive] = useState(false)
-    const [error, setError] = useState('')
+    const [error, setError] = useState<string|null>(null)
     const [currentMovie, setCurrentMovie] = useState<Movie | null>(null)
-    const handleSubmit = (formData: FormData) => {
+    const handleSubmit = (query:string) => {
         setMovies([])
-        const query = formData.get("query") as string;
-        if (!query.trim()) {
-            toast.error('Please enter your search query')
-            return
-        }
 
         setLoading(true);
         setError("")
@@ -29,7 +23,9 @@ function App() {
             if (!data.results.length) {
                 toast.error('No movies found for your request')
             }
+
             setMovies(data.results);
+
         }).catch(e => {
             setError(e.message)
         }).finally(() => setLoading(false))
@@ -37,22 +33,11 @@ function App() {
 
     function onSelect(movie: Movie): void {
         setCurrentMovie(movie)
-        setIsModalActive(true)
     }
 
     function onClose() {
-        setIsModalActive(false)
         setCurrentMovie(null)
     }
-
-    useEffect(() => {
-        if (isModalActive) {
-            document.body.classList.add('hidden')
-        } else {
-            document.body.classList.remove('hidden')
-        }
-    }, [isModalActive]);
-
 
     if (error) {
         return (
@@ -71,7 +56,7 @@ function App() {
                 movies={movies}
                 onSelect={onSelect}
             />)}
-            {isModalActive && (
+            {currentMovie && (
                 <MovieModal
                     movie={currentMovie}
                     onClose={onClose}
