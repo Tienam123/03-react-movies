@@ -1,5 +1,5 @@
 import {http} from "../libs/api-service.ts";
-import {ROUTES} from "../constants";
+import {BEARER_KEY, ROUTES} from "../constants";
 import type {Movie} from "../types/movie.ts";
  interface MoviesResponse {
     page: number;
@@ -12,6 +12,11 @@ export const fetchMovie = async (query:string,page:string = '1'):Promise<MoviesR
         query,
         page
     })
-    const {data} = await http.get<MoviesResponse>(`${ROUTES.searchMovie}?${urlSearchParams.toString()}`);
+    const {data} = await http.get<MoviesResponse>(`${ROUTES.searchMovie}?${urlSearchParams.toString()}`,{
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${BEARER_KEY}`
+        }
+    });
     return data;
 }
